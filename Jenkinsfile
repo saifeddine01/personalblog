@@ -7,6 +7,9 @@ pipeline {
     }
 
     stages {
+            stage('Piepeline bgin') {
+              sh 'Pipeline started'
+            }
         stage('Clean Workspace') {
             steps {
                 deleteDir()
