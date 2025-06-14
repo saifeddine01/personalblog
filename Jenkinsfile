@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Replace this with direct Git checkout if not using Multibranch Pipeline
-                git url: 'https://github.com/your-username/your-repo.git', branch: 'main'
+                git url: 'https://github.com/saifeddine01/personalblog.git', branch: 'master'
             }
         }
 
