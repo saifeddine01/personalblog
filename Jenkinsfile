@@ -13,8 +13,8 @@ pipeline {
                 deleteDir()
             }
         }
-    }
-}
+
+
 
         stage('Checkout Code') {
             steps {
