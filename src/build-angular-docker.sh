@@ -26,3 +26,4 @@
 # sudo cp -r "$WORKDIR/$BUILD_OUTPUT/"* "$NGINX_DEPLOY_DIR/"
 
 # echo "Build and deploy completed."
+# trigger changes
