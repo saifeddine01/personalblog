@@ -1,21 +1,20 @@
 pipeline {
     agent any
 
-    environment {
-        DIST_DIR = 'dist/browser'
-        NGINX_DIR = '/var/www/html'
-    }
-
     stages {
-        stage('Piepeline bgin') {
+        stage('Pipeline Begin') {
             steps {
-              sh 'Pipeline started'
-            }}
+                echo 'Pipeline started'
+            }
+        }
+
         stage('Clean Workspace') {
             steps {
                 deleteDir()
             }
         }
+    }
+}
 
         stage('Checkout Code') {
             steps {
