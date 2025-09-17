@@ -20,7 +20,7 @@ RUN npm run build -- --configuration production
 FROM arm64v8/nginx:stable-alpine
 
 # Copy built Angular files to Nginx html folder
-COPY --from=builder /app/dist/* /usr/share/nginx/html/
+COPY --from=builder /app/dist/personalblog/browser* /usr/share/nginx/html/
 
 # Copy custom Nginx config if needed
 # (optional, can skip if default config works)
