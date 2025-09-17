@@ -33,3 +33,24 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
+
+          
+# Deploy stage (on your Pi runner)
+  deploy:
+    stage: deploy
+    tags:
+      - arm64       # ensure this runs on your Pi
+    script:
+        # Stop container if running
+      - |
+          if [ "$(docker ps -q -f name=ghcr.io/saifeddine01/angular-app)" ]; then
+            echo "Stopping existing container..."
+            docker stop ghcr.io/saifeddine01/angular-app
+            docker rm ghcr.io/saifeddine01/angular-app
+          fi
+        # Pull latest image
+      - docker pull ghcr.io/saifeddine01/angular-app
+        # Run new container
+      - docker run -d --name ghcr.io/saifeddine01/angular-app -p 80:80 ghcr.io/saifeddine01/angular-app
+
+
