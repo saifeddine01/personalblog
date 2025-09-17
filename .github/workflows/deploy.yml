@@ -48,8 +48,8 @@ jobs:
           fi
 
       # Pull latest image
-      - name: Pull latest image
-        run: docker pull ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
+      # - name: Pull latest image
+      #   run: docker pull ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
 
       # Run new container
       - name: Run container
