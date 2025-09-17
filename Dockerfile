@@ -1,7 +1,7 @@
 # ============================
 # Stage 1: Build Angular app
 # ============================
-FROM arm64v8/node:20
+FROM arm64v8/node:20 AS builder
 
 # Set working directory
 WORKDIR /app
