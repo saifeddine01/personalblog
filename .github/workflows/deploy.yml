@@ -28,4 +28,4 @@ jobs:
           context: .
           push: true
           platforms: linux/arm64
-          tags: ghcr.io/${{ github.GH_USERNAME }}/angular-app:latest
+          tags: ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
