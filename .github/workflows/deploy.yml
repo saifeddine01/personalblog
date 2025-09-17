@@ -2,7 +2,7 @@ name: Build and Deploy Angular App
 
 on:
   push:
-    branches: [ "master" ]   # run on pushes to main branch
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -11,13 +11,12 @@ jobs:
       contents: read
       packages: write
 
-
     steps:
       # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Log in to GitHub Container Registry (GHCR)
+      # 2. Log in to GHCR
       - name: Log in to GHCR
         uses: docker/login-action@v2
         with:
@@ -34,23 +33,24 @@ jobs:
           platforms: linux/arm64
           tags: ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
 
-          
-# Deploy stage (on your Pi runner)
   deploy:
-    stage: deploy
-    tags:
-      - arm64       # ensure this runs on your Pi
-    script:
-        # Stop container if running
-      - |
-          if [ "$(docker ps -q -f name=ghcr.io/saifeddine01/angular-app)" ]; then
+    runs-on: self-hosted
+    needs: build
+    steps:
+      # Stop existing container if running
+      - name: Stop running container
+        run: |
+          CONTAINER_NAME=angular-app
+          if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
             echo "Stopping existing container..."
-            docker stop ghcr.io/saifeddine01/angular-app
-            docker rm ghcr.io/saifeddine01/angular-app
+            docker stop $CONTAINER_NAME
+            docker rm $CONTAINER_NAME
           fi
-        # Pull latest image
-      - docker pull ghcr.io/saifeddine01/angular-app
-        # Run new container
-      - docker run -d --name ghcr.io/saifeddine01/angular-app -p 80:80 ghcr.io/saifeddine01/angular-app
 
+      # Pull latest image
+      - name: Pull latest image
+        run: docker pull ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
 
+      # Run new container
+      - name: Run container
+        run: docker run -d --name angular-app -p 80:80 ghcr.io/${{ secrets.GH_USERNAME }}/angular-app:latest
