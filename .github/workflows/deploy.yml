@@ -1,0 +1,31 @@
+name: Build and Deploy Angular App
+
+on:
+  push:
+    branches: [ "master" ]   # run on pushes to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Log in to GitHub Container Registry (GHCR)
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.GH_USERNAME }}
+          password: ${{ secrets.CR_PAT }}
+
+      # 3. Build and push Docker image
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64
+          tags: ghcr.io/${{ github.GH_USERNAME }}/angular-app:latest

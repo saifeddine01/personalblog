@@ -1,39 +1,32 @@
-# Use official Node.js base image for Raspberry Pi (64-bit)
+# ============================
+# Stage 1: Build Angular app
+# ============================
 FROM arm64v8/node:20
 
-# Install Angular CLI globally
-RUN npm install -g @angular/cli
-
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy only package files first for better caching
-COPY package*.json ./
-
 # Install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of your Angular project
+# Copy project files and build Angular app
 COPY . .
+RUN npm run build -- --configuration production
 
-# Build the Angular app with production config
-RUN ng build --configuration production
+# ============================
+# Stage 2: Serve with Nginx
+# ============================
+FROM arm64v8/nginx:stable-alpine
 
-# Dummy CMD (container will exit after build)
-CMD ["echo", "Angular production build complete"]
+# Copy built Angular files to Nginx html folder
+COPY --from=builder /app/dist/* /usr/share/nginx/html/
 
-
-
-# Stage 1: Build Angular App using ARM-compatible Node
-# FROM node:18-alpine AS builder
-# WORKDIR /app
-# COPY . .
-# RUN npm install && npm run build -- --configuration production
-
-# # Stage 2: Serve with ARM-compatible Nginx
-# FROM nginx:alpine
-# COPY --from=builder /app/dist/personalblog /usr/share/nginx/html
+# Copy custom Nginx config if needed
+# (optional, can skip if default config works)
 # COPY nginx-custom.conf /etc/nginx/conf.d/default.conf
 
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
+# Expose port 80
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
